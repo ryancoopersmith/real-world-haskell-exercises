@@ -41,10 +41,10 @@ myNull [] = True
 myNull _ = False
 
 myHead :: [a] -> a
-myHead (x:xs) = x
+myHead (x:_) = x
 
 myTail :: [a] -> [a]
-myTail (x:xs) = xs
+myTail (_:xs) = xs
 
 myLast :: [a] -> a
 myLast (x:xs) = if null xs
@@ -55,3 +55,37 @@ myInit :: [a] -> [a]
 myInit (x:xs) = x : if null (tail xs)
                     then []
                     else myInit xs
+
+myAppend :: [a] -> [a] -> [a]
+xs `myAppend` ys = if null xs
+                   then ys
+                   else (head xs) : myAppend (tail xs) ys
+
+myConcat :: [[a]] -> [a]
+myConcat [] = []
+myConcat (x:xs) = x ++ (myConcat xs)
+
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x:xs) = (myReverse xs) ++ [x]
+
+myAnd :: [Bool] -> Bool
+myAnd [] = True -- must default to True since False will always make this false
+myAnd (x:xs) = x && (myAnd xs)
+
+myOr :: [Bool] -> Bool
+myOr [] = False -- must default to False since True will always make this true
+myOr (x:xs) = x || (myOr xs)
+
+myAll :: (a -> Bool) -> [a] -> Bool
+myAll _ [] = True
+myAll pred (x:xs) = (pred x) && (myAll pred xs)
+
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny _ [] = False
+myAny pred (x:xs) = (pred x) || (myAny pred xs)
+
+-- to test:
+greaterThan3 x = x > 3
+-- myAll greaterThan3 [4,5,6] is true
+-- myAny greaterThan3 [3,5,1] is true
