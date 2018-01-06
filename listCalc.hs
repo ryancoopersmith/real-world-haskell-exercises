@@ -35,3 +35,23 @@ sortLOL xs = sortBy lengthSort xs
 joinLOL :: Char -> [String] -> String -- join list of lists by seperator
 joinLOL s xs | null xs   = ""
              | otherwise = (head xs) ++ [s] ++ joinLOL s (tail xs)
+
+myNull :: [a] -> Bool
+myNull [] = True
+myNull _ = False
+
+myHead :: [a] -> a
+myHead (x:xs) = x
+
+myTail :: [a] -> [a]
+myTail (x:xs) = xs
+
+myLast :: [a] -> a
+myLast (x:xs) = if null xs
+                then x
+                else myLast xs
+
+myInit :: [a] -> [a]
+myInit (x:xs) = x : if null (tail xs)
+                    then []
+                    else myInit xs
