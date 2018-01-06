@@ -1,4 +1,5 @@
 import Data.List
+import Data.Maybe
 
 myLength :: [a] -> Int
 myLength [] = 0
@@ -89,3 +90,22 @@ myAny pred (x:xs) = (pred x) || (myAny pred xs)
 greaterThan3 x = x > 3
 -- myAll greaterThan3 [4,5,6] is true
 -- myAny greaterThan3 [3,5,1] is true
+
+-- total versions of standard partial list functions
+safeHead :: [a] -> Maybe a
+safeHead [] = Nothing
+safeHead (x:xs) = Just x
+
+safeTail :: [a] -> Maybe [a]
+safeTail [] = Nothing
+safeTail (x:xs) = Just xs
+
+safeLast :: [a] -> Maybe a
+safeLast [] = Nothing
+safeLast (x:[]) = Just x
+safeLast (x:xs) = safeLast xs
+
+safeInit :: [a] -> Maybe [a]
+safeInit [] = Nothing
+safeInit (x:[]) = Just []
+safeInit (x:xs) = Just (x : fromJust (safeInit xs))
