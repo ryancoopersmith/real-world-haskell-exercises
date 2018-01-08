@@ -47,9 +47,13 @@ takeWhile_fold p xs = foldr step [] xs
     where step x ys
             | p x = x:ys
             | otherwise = []
- -- 'ys' really is the list of remaining 'step' thunks, mapped for each element in the list
- -- since we're using lazy evaluation and foldr, not 'calling' ys will not evaluate the rest of the 'ys' thunk, resulting in a base case
- -- (at least this is my take on it); folds are tough, read http://www.cs.nott.ac.uk/~pszgmh/fold.pdf and https://en.wikipedia.org/wiki/Fold_(higher-order_function) to get a better grasp on them
+-- 'ys' really is the list of remaining 'step' thunks, mapped for each element in the list
+-- since we're using lazy evaluation and foldr, not 'calling' ys will not evaluate the rest of the 'ys' thunk, resulting in a base case
+-- (at least this is my take on it); folds are tough, read http://www.cs.nott.ac.uk/~pszgmh/fold.pdf and https://en.wikipedia.org/wiki/Fold_(higher-order_function) to get a better grasp on them
+
+-- NOTE: fold associativity: fold(l/r) (-) 0 [1,2,3]
+-- * foldr: (1-(2-(3-0))) = 2
+-- * foldl: (((0-1)-2)-3) = -6
 
 -- groupBy ex: (groupBy test [1,1,2,4,5,5,6,1]) == [[1,1],[2],[4],[5,5],[6],[1]]
 -- test x y = x == y
@@ -57,6 +61,27 @@ takeWhile_fold p xs = foldr step [] xs
 groupBy_fold :: (a -> a -> Bool) -> [a] -> [[a]]
 groupBy_fold _ [] = []
 groupBy_fold p xs = foldr step [] xs
-    where step x ys
-            | p x y = [x:y]:ys --something like this
-            | otherwise = [x]:[y]:ys
+    where step x [] = [[x]]
+          step x (y:ys)
+            | p x (head y) = (x:y):ys
+            | otherwise = [x]:(y:ys)
+
+-- For the following functions, explain which is more appropriate: foldl' or foldr
+
+any_fold :: (a -> Bool) -> [a] -> Bool
+any_fold _ [] = False
+any_fold p xs = foldr step False xs
+    where step _ True = True
+          step x _ = p x
+
+-- cycle_fold :: [a] -> [a]
+-- cycle_fold xs = foldr step xs xs
+-- where step x xs = 
+
+-- words_fold :: String -> [String]
+-- words_fold s = foldr step [] s
+--     where step c (x:xs)
+--             | c == ' ' = c:(x:xs)
+--             | otherwise = (c:x):xs
+
+-- unlines_fold :: [String] -> String
