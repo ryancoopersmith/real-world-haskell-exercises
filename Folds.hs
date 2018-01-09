@@ -47,9 +47,9 @@ takeWhile_fold p xs = foldr step [] xs
     where step x ys
             | p x = x:ys
             | otherwise = []
--- 'ys' really is the list of remaining 'step' thunks, mapped for each element in the list
--- since we're using lazy evaluation and foldr, not 'calling' ys will not evaluate the rest of the 'ys' thunk, resulting in a base case
--- (at least this is my take on it); folds are tough, read http://www.cs.nott.ac.uk/~pszgmh/fold.pdf and https://en.wikipedia.org/wiki/Fold_(higher-order_function) to get a better grasp on them
+-- since we're using foldr, the thunk we're building up in the stack ends when we stop using the accumulator, effectively short circuting the fold
+-- foldl would have just used '[]' in the accumulator, continuing the fold
+-- folds resources: http://www.cs.nott.ac.uk/~pszgmh/fold.pdf and https://en.wikipedia.org/wiki/Fold_(higher-order_function) and https://wiki.haskell.org/Foldr_Foldl_Foldl%27
 
 -- NOTE: fold associativity: fold(l/r) (-) 0 [1,2,3]
 -- * foldr: (1-(2-(3-0))) = 2
@@ -68,20 +68,30 @@ groupBy_fold p xs = foldr step [] xs
 
 -- For the following functions, explain which is more appropriate: foldl' or foldr
 
+-- can use either foldr or foldl' here since associativity is not an issue
+-- would use foldr since more ubiquitous in real scenario; just using foldl' here for example
 any_fold :: (a -> Bool) -> [a] -> Bool
 any_fold _ [] = False
-any_fold p xs = foldr step False xs
-    where step _ True = True
-          step x _ = p x
+any_fold p xs = foldl' step False xs
+    where step True _ = True
+          step _ x = p x
 
--- cycle_fold :: [a] -> [a]
--- cycle_fold xs = foldr step xs xs
--- where step x xs = 
+-- had to use foldr since infinite
+cycle_fold :: [a] -> [a]
+cycle_fold [] = error "You gave me an empty list!"
+cycle_fold xs = foldr (:) (cycle_fold xs) xs
 
--- words_fold :: String -> [String]
--- words_fold s = foldr step [] s
---     where step c (x:xs)
---             | c == ' ' = c:(x:xs)
---             | otherwise = (c:x):xs
+-- using foldr here to avoid reversing list
+words_fold :: String -> [String]
+words_fold s = foldr step [] s
+    where step c []
+            | c == ' ' = []
+            | otherwise = (c:[]):[]
+          step c (x:xs)
+            | c == ' ' = []:(x:xs)
+            | otherwise = (c:x):xs
 
--- unlines_fold :: [String] -> String
+-- using foldr here to avoid reversing list
+unlines_fold :: [String] -> String
+unlines_fold xs = foldr step [] xs
+    where step s ys = (s ++ "\n") ++ ys
