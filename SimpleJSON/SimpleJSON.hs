@@ -17,8 +17,6 @@ data JValue = JString String
             | JArray [JValue]
               deriving (Eq, Ord, Show)
 
--- jsonTest = (JObject (("myArrayValue", JArray ((JNumber 1):(JNumber 2):(JNumber 3):[])):("myNullValue", JNull):("myBoolValue", JBool True):[]))
-
 getString :: JValue -> Maybe String
 getString (JString s) = Just s
 getString _           = Nothing
