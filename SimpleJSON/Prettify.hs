@@ -103,3 +103,10 @@ w `fits` _ | w < 0 = False
 w `fits` ""        = True
 w `fits` ('\n':_)  = True
 w `fits` (c:cs)    = (w - 1) `fits` cs
+
+-- TODO:
+-- fill :: Int -> Doc -> Doc
+-- fill w d = pretty w d
+
+-- nest :: Int -> Doc -> Doc
+-- nest i d = pretty 80 d
