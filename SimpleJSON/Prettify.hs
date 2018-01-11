@@ -5,7 +5,7 @@ module Prettify (
     double,
     fsep,
     hcat,
-    punctuate
+    punctuate,
     text,
     compact,
     pretty

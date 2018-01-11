@@ -7,5 +7,5 @@ import PrettyJSON (ppJValue, compactJValue)
 json = (JObject (("myArrayValue", JArray ((JNumber 1):(JNumber 2):(JNumber 3):[])):("myNullValue", JNull):("myBoolValue", JBool True):[]))
 
 -- main = putJValue json
-main = ppJValue json
+main = ppJValue 80 json
 -- main = compactJValue json
