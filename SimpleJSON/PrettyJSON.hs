@@ -1,4 +1,8 @@
-module PrettyJSON (renderJValue) where
+module PrettyJSON (
+    renderJValue,
+    ppJValue,
+    compactJValue
+) where
 
 import Numeric (showHex)
 import Data.Char (ord)
@@ -55,3 +59,9 @@ hexEscape c | d < 0x10000 = smallHex d
 series :: Char -> Char -> (a -> Doc) -> [a] -> Doc
 series open close item = enclose open close
                        . fsep . punctuate (char ',') . map item
+
+ppJValue :: Int -> JValue -> IO ()
+ppJValue w = putStrLn . (pretty w) . renderJValue
+
+compactJValue :: JValue -> IO ()
+compactJValue = putStrLn . compact . renderJValue

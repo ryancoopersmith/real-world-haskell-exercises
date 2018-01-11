@@ -1,6 +1,11 @@
 module Main (main) where
 
 import SimpleJSON
-import PutJSON
+-- import PutJSON
+import PrettyJSON (ppJValue, compactJValue)
 
-main = putJValue (JObject (("myArrayValue", JArray ((JNumber 1):(JNumber 2):(JNumber 3):[])):("myNullValue", JNull):("myBoolValue", JBool True):[]))
+json = (JObject (("myArrayValue", JArray ((JNumber 1):(JNumber 2):(JNumber 3):[])):("myNullValue", JNull):("myBoolValue", JBool True):[]))
+
+-- main = putJValue json
+main = ppJValue json
+-- main = compactJValue json
