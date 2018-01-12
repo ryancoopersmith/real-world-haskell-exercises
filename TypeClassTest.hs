@@ -12,3 +12,7 @@ instance SpecialCombo (TCTest a) where
 
 instance SpecialCombo Char where
     (=?=) x y = x == y && x == 'z'
+
+instance Show (TCTest a) where
+    show (TC _) = "TC"
+    show (TCT _) = "TCT"
