@@ -11,6 +11,8 @@
 --        let outStr = name2reply inpStr
 --        putStrLn outStr
 
+-- Imperative version:
+
 -- import System.IO
 -- import Data.Char(toUpper)
 
@@ -31,7 +33,32 @@
 --                    hPutStrLn outh (map toUpper inpStr)
 --                    mainloop inh outh
 
-import System.IO
+-- Lazy functional version:
+
+-- import System.IO
+-- import Data.Char(toUpper)
+
+-- main :: IO ()
+-- main = do
+--        inh <- openFile "input.txt" ReadMode
+--        outh <- openFile "output.txt" WriteMode
+--        inpStr <- hGetContents inh
+--        let result = processData inpStr
+--        hPutStr outh result
+--        hClose inh
+--        hClose outh
+
+-- processData :: String -> String
+-- processData = map toUpper
+
+-- using the readFile and writeFile shortcuts:
+
+-- import Data.Char(toUpper)
+-- main = do
+--        inpStr <- readFile "input.txt"
+--        writeFile "output.txt" (map toUpper inpStr)
+-- import System.IO
+
 import System.Directory(getTemporaryDirectory, removeFile)
 import Control.Exception(catch, IOException)
 import Control.Exception(finally)
