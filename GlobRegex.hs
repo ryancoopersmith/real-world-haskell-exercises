@@ -31,8 +31,8 @@ charClass (']':cs) = ']' : globToRegex' cs
 charClass (c:cs)   = c : charClass cs
 charClass []       = error "unterminated character class"
 
-matchesGlob :: FilePath -> String -> Bool -> Bool
-matchesGlob name pat ins = if ins
+matchesGlob :: Bool -> String -> FilePath -> Bool
+matchesGlob ins pat name = if ins
                            then name =~+ (globToRegex pat, compIgnoreCase, execBlank)
                            else name =~ globToRegex pat
 
