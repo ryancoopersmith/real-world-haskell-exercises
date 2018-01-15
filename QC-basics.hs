@@ -32,3 +32,5 @@ prop_append xs ys       =
     not (null xs) ==>
     not (null ys) ==>
         head (qsort (xs ++ ys)) == min (minimum xs) (minimum ys)
+
+prop_sort_model xs = sort xs == qsort xs
