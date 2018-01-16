@@ -1,3 +1,5 @@
+module QC where
+
 import Test.QuickCheck
 import Data.List
 
