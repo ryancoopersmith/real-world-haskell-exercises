@@ -111,7 +111,7 @@ rpnShow i =
     in join " " (toList i)
 
 {- Perform some basic algebraic simplifications on a SymbolicManip. -}
-simplify :: (Num a) => SymbolicManip a -> SymbolicManip a
+simplify :: (Num a, Eq a) => SymbolicManip a -> SymbolicManip a
 simplify (BinaryArith op ia ib) =
     let sa = simplify ia
         sb = simplify ib
@@ -132,5 +132,20 @@ simplify x = x
 {- New data type: Units.  A Units type contains a number
 and a SymbolicManip, which represents the units of measure.
 A simple label would be something like (Symbol "m") -}
-data Num a => Units a = Units a (SymbolicManip a)
+data Units a = Units a (SymbolicManip a)
            deriving (Eq)
+
+{- Implement Units for Num.  We don't know how to convert between
+arbitrary units, so we generate an error if we try to add numbers with
+different units.  For multiplication, generate the appropriate
+new units. -}
+instance (Num a, Eq a) => Num (Units a) where
+    (Units xa ua) + (Units xb ub)
+        | ua == ub = Units (xa + xb) ua
+        | otherwise = error "Mis-matched units in add or subtract"
+    (Units xa ua) - (Units xb ub) = (Units xa ua) + (Units (xb * (-1)) ub)
+    (Units xa ua) * (Units xb ub) = Units (xa * xb) (ua * ub)
+    negate (Units xa ua) = Units (negate xa) ua
+    abs (Units xa ua) = Units (abs xa) ua
+    signum (Units xa _) = Units (signum xa) (Number 1)
+    fromInteger i = Units (fromInteger i) (Number 1)
