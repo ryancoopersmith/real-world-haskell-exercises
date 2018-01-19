@@ -151,7 +151,7 @@ instance (Num a, Eq a) => Num (Units a) where
     fromInteger i = Units (fromInteger i) (Number 1)
 
 {- Make Units an instance of Fractional -}
-instance (Fractional a) => Fractional (Units a) where
+instance (Fractional a, Eq a) => Fractional (Units a) where
     (Units xa ua) / (Units xb ub) = Units (xa / xb) (ua / ub)
     recip a = 1 / a
     fromRational r = Units (fromRational r) (Number 1)
@@ -160,7 +160,7 @@ instance (Fractional a) => Fractional (Units a) where
 
 Use some intelligence for angle calculations: support deg and rad
 -}
-instance (Floating a) => Floating (Units a) where
+instance (Floating a, Eq a) => Floating (Units a) where
     pi = (Units pi (Number 1))
     exp _ = error "exp not yet implemented in Units"
     log _ = error "log not yet implemented in Units"
@@ -195,3 +195,21 @@ instance (Floating a) => Floating (Units a) where
     asinh = error "asinh not yet implemented in Units"
     acosh = error "acosh not yet implemented in Units"
     atanh = error "atanh not yet implemented in Units"
+
+{- A simple function that takes a number and a String and returns an
+appropriate Units type to represent the number and its unit of measure -}
+units :: (Num z) => z -> String -> Units z
+units a b = Units a (Symbol b)
+
+{- Extract the number only out of a Units type -}
+dropUnits :: (Num z) => Units z -> z
+dropUnits (Units x _) = x
+
+{- Utilities for the Unit implementation -}
+deg2rad x = 2 * pi * x / 360
+rad2deg x = 360 * x / (2 * pi)
+
+{- Showing units: we show the numeric component, an underscore,
+then the prettyShow version of the simplified units -}
+instance (Show a, Num a, Eq a) => Show (Units a) where
+    show (Units xa ua) = show xa ++ "_" ++ prettyShow (simplify ua)
