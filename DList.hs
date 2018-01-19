@@ -52,3 +52,7 @@ instance Functor DList where
 
 instance (Show a) => Show (DList a) where
     show = show . toList
+
+instance Monoid (DList a) where
+    mempty = empty
+    mappend = append
