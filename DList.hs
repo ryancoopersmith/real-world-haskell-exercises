@@ -49,3 +49,6 @@ dmap f = dfoldr go empty
 
 instance Functor DList where
     fmap = dmap
+
+instance (Show a) => Show (DList a) where
+    show = show . toList
