@@ -1,3 +1,6 @@
+{- This Logger monad is a specialised version of the standard Writer monad,
+ - which can be found in the Control.Monad.Writer module of the mtl package -}
+
 module Logger (
     Logger,
     Log,
@@ -9,8 +12,22 @@ newtype Logger a = Logger { execLogger :: (a, Log) }
 
 type Log = [String]
 
+{- Applicative Monad Proposal (AMP) requires Monads
+ - to also be instances of Applicative -}
+
+{- fmap and liftM are the same, and we know logger is a Monad
+ - so we can define fmap in terms of liftM -}
+instance Functor Logger where
+  fmap = liftM
+
+instance Applicative Logger where
+  pure a = Logger (a, [])
+  Logger (f, _) <*> Logger (a, _) = pure (f a)
+
+{- writting return in terms of pure as suggested by the AMP
+ - (https://wiki.haskell.org/Functor-Applicative-Monad_Proposal) -}
 instance Monad Logger where
-    return a = Logger (a, [])
+    return = pure
 
     -- (>>=) :: Logger a -> (a -> Logger b) -> Logger b
     m >>= k = let (a, w) = execLogger m
